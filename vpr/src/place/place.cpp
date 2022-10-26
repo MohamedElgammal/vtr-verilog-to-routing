@@ -2018,9 +2018,9 @@ static double comp_bb_cost(e_cost_methods method) {
     }
 
     if (method == CHECK) {
-        /*VTR_LOG("\n");
-         * VTR_LOG("BB estimate of min-dist (placement) wire length: %.0f\n",
-         * expected_wirelength);*/
+        VTR_LOG("\n");
+         VTR_LOG("BB estimate of min-dist (placement) wire length: %.0f\n",
+         expected_wirelength);
     }
     return cost;
 }
