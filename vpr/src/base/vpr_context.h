@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <memory>
 #include <vector>
+#include <mutex>
 
 #include "vpr_types.h"
 #include "vtr_ndmatrix.h"
@@ -322,10 +323,15 @@ struct ClusteringHelperContext : public Context {
     t_ext_pin_util_targets target_external_pin_util;
 
     vtr::vector<ClusterBlockId, std::unordered_set<AtomBlockId>> atoms_lookup;
-
     ~ClusteringHelperContext() {
         free(primitives_list);
     }
+};
+
+struct PackingMultithreadingContext : public Context {
+
+    vtr::vector<ClusterBlockId, bool> clb_in_flight;
+    std::mutex mu;
 };
 
 /**
@@ -549,6 +555,8 @@ class VprContext : public Context {
     const NocContext& noc() const { return noc_; }
     NocContext& mutable_noc() { return noc_; }
 
+    const PackingMultithreadingContext& packing_multithreading() const {return packing_multithreading_; }
+    PackingMultithreadingContext& mutable_packing_multithreading() {return packing_multithreading_; }
   private:
     DeviceContext device_;
 
@@ -564,6 +572,8 @@ class VprContext : public Context {
     RoutingContext routing_;
     FloorplanningContext constraints_;
     NocContext noc_;
+
+    PackingMultithreadingContext packing_multithreading_;
 };
 
 #endif
